@@ -4,7 +4,7 @@
 | --- | --- |
 | 课程 | 객체지향프로그래밍2(02)（面向对象程序设计 2） |
 | 学号 | 23102731 |
-| 姓名 | 왕옥（王玉） |
+| 姓名 | 王旭（왕옥） |
 | 作品主题 | 石头剪刀布 · 卡通对战小游戏（Rock-Paper-Scissors） |
 | 作品形态 | 第 1 周 Visual Studio C++ 控制台程序 → 第 2 周纯前端 Web 应用 → 第 3 周 GitHub Pages 发布 |
 | 代码仓库 | https://github.com/nightmite/rps-game |
