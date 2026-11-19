@@ -3,7 +3,9 @@
 一个用纯 HTML / CSS / JavaScript 写的石头剪刀布小游戏：卡通可爱风、有倒数动画和翻牌、
 会读心的电脑、战绩自动保存，手机也能玩。
 
-> 面向对象程序设计 2 · 第 2 周作业（Vibe Coding 网页版）
+**在线试玩：<https://nightmite.github.io/rps-game/>** ｜ **仓库：<https://github.com/nightmite/rps-game>**
+
+> 面向对象程序设计 2 · 第 2–3 周作业（Vibe Coding 网页版 + GitHub Pages 发布）
 > 学号 23102731 · 姓名 왕옥
 
 ![首页](shots/01_home.png)
@@ -115,6 +117,26 @@ RpsDemo.selfTest(4000)
 ```
 
 ---
+
+## 线上发布（GitHub Pages）
+
+网站用 GitHub Pages 托管，仓库根目录就是网站根目录（`index.html` 在最外层），
+`.nojekyll` 用来关闭 Jekyll 处理。每次 `git push` 到 `main` 分支后，Pages 会自动重新部署。
+
+| 验证项 | 结果 |
+| --- | --- |
+| 线上网址 | <https://nightmite.github.io/rps-game/> |
+| 首屏资源 | HTML + 1 个 CSS + 4 个 JS 全部加载成功，0 报错 |
+| 线上规则自测 | `RpsDemo.selfTest(2000)` → 7 项全 PASS |
+| 线上出拳 | 点按钮后两张卡片正常翻开、战绩条推进、结果正确 |
+
+桌面（1280×900）：
+
+![线上桌面](shots/live_pc.png)
+
+手机竖屏（420×900 视口）：
+
+![线上手机](shots/live_mobile.png)
 
 ## 浏览器支持
 
