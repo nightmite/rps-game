@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FFF8F0">
+<title>石头剪刀布 · Rock Paper Scissors</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ 背景装饰：云朵 / 星星 ============ -->
+<div class="bg" aria-hidden="true">
+  <span class="cloud c1"></span>
+  <span class="cloud c2"></span>
+  <span class="cloud c3"></span>
+  <span class="spark s1">✦</span>
+  <span class="spark s2">✦</span>
+  <span class="spark s3">✦</span>
+  <span class="spark s4">✦</span>
+</div>
+
+<!-- ============ 手型 SVG 素材（只定义不显示） ============ -->
+<svg class="sprite" aria-hidden="true">
+  <defs>
+    <!-- 石头：握拳。拳头 + 三个指关节 + 大拇指 + 指缝 + 小脸 -->
+    <g id="hand-rock" transform="translate(-15,-15) scale(1.15)">
+      <rect class="cuff" x="62" y="146" width="76" height="36" rx="13"/>
+      <rect class="cuff-band" x="62" y="146" width="76" height="11" rx="5.5"/>
+      <rect class="skin-d" x="42" y="102" width="28" height="46" rx="14" transform="rotate(-15 56 125)"/>
+      <rect class="skin" x="56" y="84" width="88" height="70" rx="24"/>
+      <circle class="skin" cx="78" cy="86" r="10"/>
+      <circle class="skin" cx="100" cy="84" r="10"/>
+      <circle class="skin" cx="122" cy="86" r="10"/>
+      <path class="crease" d="M84 98v18"/>
+      <path class="crease" d="M100 95v21"/>
+      <path class="crease" d="M116 98v18"/>
+      <circle class="blush" cx="70" cy="133" r="9"/>
+      <circle class="blush" cx="130" cy="133" r="9"/>
+      <circle class="eye" cx="85" cy="121" r="5.4"/>
+      <circle class="eye" cx="115" cy="121" r="5.4"/>
+      <path class="mouth" d="M92 132q8 7 16 0"/>
+    </g>
+
+    <!-- 剪刀：伸出食指和中指，其余手指蜷起 -->
+    <g id="hand-scissors" transform="translate(-15,-15) scale(1.15)">
+      <rect class="cuff" x="62" y="150" width="76" height="34" rx="13"/>
+      <rect class="cuff-band" x="62" y="150" width="76" height="10" rx="5"/>
+      <rect class="skin" x="72" y="32" width="26" height="94" rx="13" transform="rotate(-11 85 79)"/>
+      <rect class="skin" x="102" y="32" width="26" height="94" rx="13" transform="rotate(11 115 79)"/>
+      <rect class="skin" x="58" y="98" width="84" height="60" rx="26"/>
+      <rect class="skin-d" x="60" y="112" width="30" height="18" rx="9"/>
+      <rect class="skin-d" x="110" y="112" width="30" height="18" rx="9"/>
+      <path class="crease" d="M84 100v10"/>
+      <path class="crease" d="M116 100v10"/>
+      <circle class="blush" cx="72" cy="140" r="9"/>
+      <circle class="blush" cx="128" cy="140" r="9"/>
+      <circle class="eye" cx="87" cy="128" r="5.4"/>
+      <circle class="eye" cx="113" cy="128" r="5.4"/>
+      <path class="mouth" d="M93 139q7 7 14 0"/>
+    </g>
+
+    <!-- 布：张开的手掌，四指 + 大拇指 -->
+    <g id="hand-paper" transform="translate(-15,-15) scale(1.15)">
+      <rect class="cuff" x="60" y="152" width="80" height="32" rx="13"/>
+      <rect class="cuff-band" x="60" y="152" width="80" height="10" rx="5"/>
+      <rect class="skin-d" x="30" y="94" width="26" height="54" rx="13" transform="rotate(-40 43 121)"/>
+      <rect class="skin" x="62" y="46" width="19" height="62" rx="9.5" transform="rotate(-6 71 108)"/>
+      <rect class="skin" x="86" y="36" width="19" height="72" rx="9.5" transform="rotate(-2 95 108)"/>
+      <rect class="skin" x="110" y="40" width="19" height="68" rx="9.5" transform="rotate(3 119 108)"/>
+      <rect class="skin" x="133" y="54" width="19" height="54" rx="9.5" transform="rotate(8 142 108)"/>
+      <rect class="skin" x="56" y="98" width="88" height="56" rx="26"/>
+      <path class="crease" d="M70 104q30 10 60 0"/>
+      <circle class="blush" cx="70" cy="136" r="9"/>
+      <circle class="blush" cx="130" cy="136" r="9"/>
+      <circle class="eye" cx="86" cy="124" r="5.4"/>
+      <circle class="eye" cx="114" cy="124" r="5.4"/>
+      <path class="mouth" d="M92 135q8 7 16 0"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- ============ 顶栏 ============ -->
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-emoji">✊</span>
+    <div class="brand-text">
+      <h1>石头剪刀布</h1>
+      <p>ROCK · PAPER · SCISSORS</p>
+    </div>
+  </div>
+
+  <div class="top-actions">
+    <div class="diff" id="diff" role="group" aria-label="难度">
+      <span class="diff-pill" id="diffPill"></span>
+      <button type="button" data-diff="easy">简单</button>
+      <button type="button" data-diff="normal" class="on">普通</button>
+      <button type="button" data-diff="hard">困难</button>
+    </div>
+    <button type="button" class="icon-btn" id="btnMode" title="切换模式">
+      <span id="modeText">先赢 3 局</span>
+    </button>
+    <button type="button" class="icon-btn" id="btnSound" title="音效开关">
+      <span id="soundIcon">🔊</span>
+    </button>
+    <button type="button" class="icon-btn" id="btnRules" title="玩法说明">?</button>
+  </div>
+</header>
+
+<!-- ============ 主棋盘 ============ -->
+<main class="board">
+
+  <!-- 比分 -->
+  <section class="scorebar">
+    <div class="side you">
+      <span class="avatar">😺</span>
+      <span class="side-name">你</span>
+      <b class="score" id="scoreYou">0</b>
+    </div>
+    <div class="vs-badge">VS</div>
+    <div class="side cpu">
+      <b class="score" id="scoreCpu">0</b>
+      <span class="side-name">电脑</span>
+      <span class="avatar">🤖</span>
+    </div>
+  </section>
+
+  <!-- 连胜 -->
+  <section class="streak" id="streak">
+    <span class="streak-fire">🔥</span>
+    <span class="streak-label">连胜</span>
+    <b id="streakNum">0</b>
+    <span class="streak-dots" id="streakDots"></span>
+    <span class="streak-best">最佳 <b id="bestStreak">0</b></span>
+  </section>
+
+  <!-- 对战区 -->
+  <section class="arena">
+    <div class="slot" id="slotYou">
+      <div class="card" id="cardYou">
+        <div class="card-inner">
+          <div class="card-face card-back"><span class="qmark">?</span></div>
+          <div class="card-face card-front">
+            <svg viewBox="0 0 200 200" class="hand"><use href="#hand-rock" id="handYou"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="slot-label">你 <small>YOU</small></div>
+      <div class="slot-move" id="moveYou">—</div>
+    </div>
+
+    <div class="arena-mid">
+      <div class="clash" id="clash">准备好了吗？</div>
+      <div class="arena-vs">VS</div>
+    </div>
+
+    <div class="slot" id="slotCpu">
+      <div class="card cpu-card" id="cardCpu">
+        <div class="card-inner">
+          <div class="card-face card-back"><span class="qmark">?</span></div>
+          <div class="card-face card-front">
+            <svg viewBox="0 0 200 200" class="hand"><use href="#hand-rock" id="handCpu"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="slot-label">电脑 <small>CPU</small></div>
+      <div class="slot-move" id="moveCpu">—</div>
+    </div>
+  </section>
+
+  <!-- 结果 -->
+  <div class="result" id="result">
+    <span class="result-main">准备开始</span>
+    <span class="result-sub">选一个手势出拳吧</span>
+  </div>
+
+  <!-- 出拳按钮 -->
+  <section class="choices" id="choices">
+    <button type="button" class="choice" data-move="1">
+      <svg viewBox="0 0 200 200" class="choice-hand"><use href="#hand-rock"/></svg>
+      <span class="choice-name">石头</span>
+      <span class="choice-en">ROCK</span>
+      <kbd>1</kbd>
+    </button>
+    <button type="button" class="choice" data-move="2">
+      <svg viewBox="0 0 200 200" class="choice-hand"><use href="#hand-scissors"/></svg>
+      <span class="choice-name">剪刀</span>
+      <span class="choice-en">SCISSORS</span>
+      <kbd>2</kbd>
+    </button>
+    <button type="button" class="choice" data-move="3">
+      <svg viewBox="0 0 200 200" class="choice-hand"><use href="#hand-paper"/></svg>
+      <span class="choice-name">布</span>
+      <span class="choice-en">PAPER</span>
+      <kbd>3</kbd>
+    </button>
+  </section>
+
+  <!-- 近期战绩 -->
+  <section class="history">
+    <div class="hist-head">
+      <span>近 8 回合 <small>LAST 8</small></span>
+      <span class="hist-legend"><i class="dot win"></i>胜 <i class="dot draw"></i>平 <i class="dot lose"></i>负</span>
+    </div>
+    <div class="hist-chips" id="histChips">
+      <span class="chip empty">还没开始</span>
+    </div>
+    <div class="hist-bars" id="histBars"></div>
+  </section>
+
+  <!-- 生涯战绩 -->
+  <section class="career">
+    <div class="career-item"><b id="cWins">0</b><span>胜 WIN</span></div>
+    <div class="career-item"><b id="cLoses">0</b><span>负 LOSE</span></div>
+    <div class="career-item"><b id="cDraws">0</b><span>平 DRAW</span></div>
+    <div class="career-item"><b id="cRate">0%</b><span>胜率 RATE</span></div>
+    <div class="career-item"><b id="cBest">0</b><span>最佳连胜 BEST</span></div>
+    <button type="button" class="link-btn" id="btnReset">重置战绩</button>
+  </section>
+</main>
+
+<!-- 礼花画布 -->
+<canvas id="fx" class="fx"></canvas>
+
+<!-- 倒数遮罩 -->
+<div class="overlay countdown-overlay" id="countdownOverlay" aria-hidden="true">
+  <div class="count-word" id="countWord">石头</div>
+</div>
+
+<!-- 规则弹层 -->
+<div class="overlay modal-overlay" id="modalRules" aria-hidden="true">
+  <div class="modal rules-modal">
+    <h2>玩法说明 <small>HOW TO PLAY</small></h2>
+    <ul class="rule-list">
+      <li><b>石头</b> 砸 剪刀 · <b>剪刀</b> 剪 布 · <b>布</b> 包 石头</li>
+      <li>点下面三个大按钮出拳，键盘 <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> 也可以</li>
+      <li><b>先赢 3 局</b> 拿下本局；也可以切成「无限练习」随便玩</li>
+      <li>电脑会<b>记住你最近几手</b>的习惯，按难度用不同概率反制你</li>
+      <li>连胜不断累积，打破自己的最佳连胜试试 🔥</li>
+      <li>战绩自动存在本机浏览器里，刷新不会丢</li>
+    </ul>
+    <div class="modal-actions">
+      <button type="button" class="btn primary" data-close>知道啦</button>
+    </div>
+  </div>
+</div>
+
+<!-- 结算弹层 -->
+<div class="overlay modal-overlay" id="modalSummary" aria-hidden="true">
+  <div class="modal summary-modal">
+    <div class="summary-emoji" id="sumEmoji">🎉</div>
+    <h2 id="sumTitle">你赢了！</h2>
+    <p class="sum-score"><span id="sumYou">3</span> : <span id="sumCpu">1</span></p>
+    <div class="sum-grid">
+      <div><b id="sumRounds">0</b><span>回合</span></div>
+      <div><b id="sumDraws">0</b><span>平局</span></div>
+      <div><b id="sumStreak">0</b><span>本局最长连胜</span></div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn primary" id="btnAgain">再来一局</button>
+      <button type="button" class="btn ghost" id="btnShowStats">看看战绩</button>
+    </div>
+  </div>
+</div>
+
+<!-- 战绩面板：点「看看战绩」打开 -->
+<div class="overlay modal-overlay" id="modalStats" aria-hidden="true">
+  <div class="modal stats-modal">
+    <h2 class="stats-title">战绩统计 <small>RECORDS</small></h2>
+
+    <div class="stats-grid">
+      <div class="stat"><b id="stWins">0</b><span>胜 WIN</span></div>
+      <div class="stat"><b id="stLoses">0</b><span>负 LOSE</span></div>
+      <div class="stat"><b id="stDraws">0</b><span>平 DRAW</span></div>
+      <div class="stat"><b id="stRate">0%</b><span>胜率 RATE</span></div>
+      <div class="stat"><b id="stBest">0</b><span>最佳连胜 BEST</span></div>
+      <div class="stat"><b id="stRounds">0</b><span>总回合 ROUNDS</span></div>
+    </div>
+
+    <h3 class="stats-sub">本局近 8 回合 <small>LAST 8</small></h3>
+    <ul class="stats-list" id="stList"></ul>
+
+    <div class="modal-actions">
+      <button type="button" class="btn primary" data-close>知道啦</button>
+      <button type="button" class="btn ghost" id="btnStatsReset">重置战绩</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/game.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
